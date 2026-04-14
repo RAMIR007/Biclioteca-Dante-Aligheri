@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-italia-green: #009246;
+  --color-italia-green-dark: #006838;
+  --color-italia-red: #CE2B37;
+  --color-italia-red-dark: #9B1B30;
+  --color-italia-cream: #FDFBF7;
+  --color-italia-slate: #1C1E1D;
+
+  /* Semantic Theme Mapping */
+  --color-primary: var(--color-italia-green);
+  --color-primary-dark: var(--color-italia-green-dark);
+  --color-secondary: var(--color-italia-red);
+  --color-secondary-dark: var(--color-italia-red-dark);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: var(--color-italia-cream);
+  --foreground: #1A1C1A;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-italia-slate);
+    --foreground: #F4F5F0;
+    --card: #2A2D2C;
+    --border: #3F4241;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Utils and animations */
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/70 dark:bg-black/40 backdrop-blur-md border border-white/20 dark:border-white/10;
+  }
+}

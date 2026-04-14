@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "books",
+  "info": {
+    "singularName": "book",
+    "pluralName": "books",
+    "displayName": "Book",
+    "description": "Library Book Catalog"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "author": {
+      "type": "string",
+      "required": true
+    },
+    "level": {
+      "type": "enumeration",
+      "enum": ["A1", "A2", "B1", "B2", "C1", "C2", "All"],
+      "required": true,
+      "default": "All"
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": ["Italian", "Spanish", "Bilingual"],
+      "required": true,
+      "default": "Italian"
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["Available", "Loaned", "Reserved", "Lost"],
+      "default": "Available",
+      "required": true
+    },
+    "isbn": {
+      "type": "string"
+    },
+    "loans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::loan.loan",
+      "mappedBy": "book"
+    }
+  }
+}

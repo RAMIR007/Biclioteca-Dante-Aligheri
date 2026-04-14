@@ -1,0 +1,17 @@
+{
+  "attributes": {
+    "phoneNumber": {
+      "type": "string"
+    },
+    "whatsappEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "loans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::loan.loan",
+      "mappedBy": "user"
+    }
+  }
+}
