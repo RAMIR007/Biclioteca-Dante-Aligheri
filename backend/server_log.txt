@@ -1,0 +1,6 @@
+
+> backend@0.1.0 develop
+> strapi develop
+
+- Cleaning dist dir C:/Users/ramir/Documents/Programacion proyectos/Biclioteca Dante Aligheri/backend/dist
+√ Cleaning dist dir (10ms)

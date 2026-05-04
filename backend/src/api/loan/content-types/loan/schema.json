@@ -34,7 +34,7 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["Pending", "Active", "Returned", "Overdue"],
+      "enum": ["Pending", "Active", "Returned", "Overdue", "Cancelled"],
       "default": "Pending",
       "required": true
     }
