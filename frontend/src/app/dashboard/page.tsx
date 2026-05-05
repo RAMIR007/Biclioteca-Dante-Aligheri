@@ -1,15 +1,36 @@
-export default function Dashboard() {
-  // Mock data representing the student's active loans
+import { getUserLoans } from "@/lib/api";
+import RenewButton from "./RenewButton";
+
+export default async function Dashboard() {
+  // Fetch real data from Strapi
+  const response = await getUserLoans();
+  const loans = response?.data || [];
+
+  const activeLoans = loans
+    .filter((loan: any) => ['Active', 'Overdue', 'Pending'].includes(loan.attributes.status))
+    .map((loan: any) => ({
+      id: loan.id,
+      title: loan.attributes.book?.data?.attributes?.title || "Libro desconocido",
+      loanDate: loan.attributes.loanDate,
+      returnDate: loan.attributes.returnDate,
+      status: loan.attributes.status,
+    }));
+
+  const history = loans
+    .filter((loan: any) => loan.attributes.status === 'Returned')
+    .map((loan: any) => ({
+      id: loan.id,
+      title: loan.attributes.book?.data?.attributes?.title || "Libro desconocido",
+      loanDate: loan.attributes.loanDate,
+      returnDate: loan.attributes.returnDate,
+      status: loan.attributes.status,
+    }));
+
   const userStats = {
-    name: "Estudiante Ejemplo",
+    name: "Estudiante Ejemplo", // In a real app, fetch from auth context
     role: "student",
-    activeLoans: [
-      { id: 101, title: "L'amica geniale", loanDate: "2024-03-01", returnDate: "2024-03-15", status: "Active" },
-      { id: 102, title: "Pinocchio", loanDate: "2024-02-10", returnDate: "2024-02-24", status: "Overdue" },
-    ],
-    history: [
-      { id: 99, title: "La Divina Commedia", loanDate: "2023-11-01", returnDate: "2023-11-15", status: "Returned" },
-    ]
+    activeLoans,
+    history,
   };
 
   return (
@@ -27,7 +48,7 @@ export default function Dashboard() {
             <div className="bg-[var(--color-card)] rounded-2xl p-6 md:p-8 shadow-sm border border-[var(--color-border)]">
               <h2 className="text-2xl font-bold mb-6 text-[var(--foreground)]">Préstamos Activos</h2>
               
-              {userStats.activeLoans.map(loan => (
+              {userStats.activeLoans.map((loan: any) => (
                 <div key={loan.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 mb-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/10 hover:shadow-md transition-shadow">
                   <div>
                     <h3 className="font-bold text-lg text-[var(--foreground)] mb-1">{loan.title}</h3>
@@ -38,13 +59,14 @@ export default function Dashboard() {
                   </div>
                   <div className="mt-4 sm:mt-0 flex items-center gap-3">
                     <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                      loan.status === 'Active' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
+                      loan.status === 'Active' ? 'bg-blue-100 text-blue-700' : 
+                      loan.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
                     }`}>
-                      {loan.status === 'Active' ? 'En Curso' : 'Vencido'}
+                      {loan.status === 'Active' ? 'En Curso' : 
+                       loan.status === 'Pending' ? 'Pendiente' : 'Vencido'}
                     </span>
-                    <button className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-                      Solicitar Renovación
-                    </button>
+                    <RenewButton loanId={loan.id} disabled={loan.status === 'Overdue'} />
                   </div>
                 </div>
               ))}
@@ -73,7 +95,7 @@ export default function Dashboard() {
             <div className="bg-[var(--color-card)] rounded-2xl p-6 shadow-sm border border-[var(--color-border)]">
               <h3 className="font-bold text-[var(--foreground)] mb-4">Historial Reciente</h3>
               <ul className="space-y-4">
-                {userStats.history.map(item => (
+                {userStats.history.map((item: any) => (
                   <li key={item.id} className="flex justify-between items-center text-sm border-b border-gray-100 dark:border-gray-800 pb-2">
                     <span className="text-gray-600 dark:text-gray-300">{item.title}</span>
                     <span className="text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">Devuelto</span>

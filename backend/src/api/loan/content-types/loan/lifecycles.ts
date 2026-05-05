@@ -25,13 +25,14 @@ export default {
     
     try {
       // Recargamos el préstamo completo con las relaciones para más seguridad
-      const loan = await strapiInstance.entityService.findOne('api::loan.loan', result.id, {
+      const loan: any = await strapiInstance.entityService.findOne('api::loan.loan', result.id, {
          populate: ['book', 'user']
       });
 
       if (loan && loan.book) {
         // Al crear un préstamo nuevo, normalmente el estado es Pending, 
         // por tanto reservamos el libro
+        // @ts-ignore
         await strapiInstance.entityService.update('api::book.book', loan.book.id, {
           data: { status: 'Reserved' }
         });
@@ -54,7 +55,7 @@ export default {
       // Cuando se cambia el estado del préstamo actualizamos el estado del libro
       if (data.status) {
          const loanId = result.id;
-         const loan = await strapiInstance.entityService.findOne('api::loan.loan', loanId, {
+         const loan: any = await strapiInstance.entityService.findOne('api::loan.loan', loanId, {
             populate: ['book', 'user']
          });
 
@@ -67,6 +68,7 @@ export default {
             }
 
             if (newBookStatus) {
+               // @ts-ignore
                await strapiInstance.entityService.update('api::book.book', loan.book.id, {
                   data: { status: newBookStatus }
                });
@@ -92,7 +94,7 @@ export default {
      const loanId = params.where?.id;
      if (loanId) {
          try {
-           const loan = await strapi.entityService.findOne('api::loan.loan', loanId, {
+           const loan: any = await strapi.entityService.findOne('api::loan.loan', loanId, {
                populate: ['book']
            });
            event.state = event.state || {};
@@ -110,6 +112,7 @@ export default {
          // Devolvemos el libro a estado Available
          if (['Pending', 'Active', 'Overdue'].includes(loan.status)) {
              try {
+               // @ts-ignore
                await strapi.entityService.update('api::book.book', loan.book.id, {
                  data: { status: 'Available' }
                });

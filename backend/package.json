@@ -17,11 +17,14 @@
   "dependencies": {
     "@strapi/plugin-cloud": "5.42.0",
     "@strapi/plugin-users-permissions": "5.42.0",
+    "@strapi/provider-upload-cloudinary": "^5.44.0",
     "@strapi/strapi": "5.42.0",
     "better-sqlite3": "12.8.0",
+    "cloudinary": "^2.10.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "sharp": "^0.34.5",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getBook, getStrapiURL } from "@/lib/api";
+import { getBook, getStrapiURL, fetchAPI } from "@/lib/api";
+import { revalidatePath } from "next/cache";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -57,6 +58,35 @@ export default async function BookDetail({ params }: Props) {
   }
 
   const isAvailable = book.status === "Available";
+
+  async function requestLoan(formData: FormData) {
+    "use server"
+    
+    const bookId = formData.get('bookId') as string;
+    
+    // 14 days from now
+    const loanDate = new Date().toISOString().split('T')[0];
+    const returnDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    try {
+      await fetchAPI('/loans', {}, {
+        method: 'POST',
+        body: JSON.stringify({
+          data: {
+            book: bookId,
+            user: 1, // Mocked user ID
+            loanDate,
+            returnDate,
+            status: 'Pending'
+          }
+        })
+      });
+      revalidatePath(`/book/${bookId}`);
+      revalidatePath(`/dashboard`);
+    } catch (e) {
+      console.error("Error creating loan:", e);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[var(--background)] py-12 px-4 md:px-8">
@@ -126,9 +156,12 @@ export default async function BookDetail({ params }: Props) {
 
               <div className="mt-auto">
                 {isAvailable ? (
-                  <button className="w-full md:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    Solicitar Préstamo
-                  </button>
+                  <form action={requestLoan}>
+                    <input type="hidden" name="bookId" value={book.id} />
+                    <button type="submit" className="w-full md:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                      Solicitar Préstamo
+                    </button>
+                  </form>
                 ) : (
                   <button className="w-full md:w-auto bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-xl">
                     Anotarme en lista de espera

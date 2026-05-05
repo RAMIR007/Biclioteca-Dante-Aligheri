@@ -82,7 +82,7 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {finalBooks.map((book) => (
+          {finalBooks.map((book: any) => (
             <div key={book.id} className="group flex flex-col bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               
               {/* Cover Image Area */}

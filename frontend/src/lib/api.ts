@@ -43,3 +43,20 @@ export async function getBook(id: string | number) {
   const data = await fetchAPI(`/books/${id}`, { populate: '*' });
   return data;
 }
+
+export async function getUserLoans(userId?: number) {
+  // If no userId is provided, we fetch loans for user ID 1 (mocking a logged-in user)
+  const id = userId || 1;
+  const data = await fetchAPI(`/loans`, {
+    filters: {
+      user: {
+        id: {
+          $eq: id,
+        },
+      },
+    },
+    populate: ['book'],
+    sort: ['createdAt:desc'],
+  }, { cache: 'no-store' });
+  return data;
+}
