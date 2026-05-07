@@ -12,33 +12,43 @@ export default async function BookDetail({ params }: Props) {
   let book = null;
 
   try {
-    const res = await getBook(id);
-    if (res && res.data) {
-      book = {
-        id: res.data.documentId,
-        title: res.data.title,
-        author: res.data.author,
-        level: res.data.level,
-        language: res.data.language,
-        status: res.data.status,
-        isbn: res.data.isbn,
-        coverUrl: res.data.cover?.url ? getStrapiURL(res.data.cover.url) : null,
-        description: "Sin descripción en catálogo"
-      };
+    // Si el ID es de un placeholder ('p1', 'p2', etc.), no intentamos buscarlo en Strapi
+    if (!id.startsWith('p')) {
+      const res = await getBook(id);
+      if (res && res.data) {
+        book = {
+          id: res.data.documentId,
+          strapiId: res.data.id, // Necesitamos el ID numérico para el endpoint de descarga
+          title: res.data.title,
+          author: res.data.author,
+          level: res.data.level,
+          language: res.data.language,
+          status: res.data.status,
+          isbn: res.data.isbn,
+          format: res.data.format || "Physical",
+          totalDownloads: res.data.totalDownloads || 0,
+          coverUrl: res.data.cover?.url ? getStrapiURL(res.data.cover.url) : null,
+          description: "Sin descripción en catálogo"
+        };
+      }
     }
   } catch (e) {
-    console.error("Failed to fetch book from Strapi:", e);
+    // Silenciamos el error en consola para no mostrar la pantalla roja de Next.js
+    // ya que tenemos un fallback a los libros de prueba configurado abajo.
   }
 
   // Fallback to mock data if Strapi is not running or book not found
   if (!book && id.startsWith('p')) {
      book = { 
       id, 
+      strapiId: 999,
       title: "Libro de Ejemplo", 
       author: "Autor Desconocido", 
       level: "B1", 
       language: "Italian", 
       status: "Available", 
+      format: "Digital",
+      totalDownloads: 12,
       publishYear: "N/A",
       isbn: "N/A",
       coverUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop",
@@ -143,6 +153,15 @@ export default async function BookDetail({ params }: Props) {
                 <span className="bg-gray-100 dark:bg-gray-800 text-[var(--foreground)] px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700">
                   Idioma: <strong>{book.language}</strong>
                 </span>
+                <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-4 py-2 rounded-lg text-sm font-bold border border-[var(--color-primary)]/20">
+                  Formato: {book.format === 'Physical' ? 'Físico' : book.format === 'Digital' ? 'Digital' : 'Físico y Digital'}
+                </span>
+                {book.format !== 'Physical' && (
+                  <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800 flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    {book.totalDownloads} Descargas
+                  </span>
+                )}
                 {book.isbn && (
                 <span className="bg-gray-100 dark:bg-gray-800 text-[var(--foreground)] px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700">
                   ISBN: {book.isbn}
@@ -154,22 +173,38 @@ export default async function BookDetail({ params }: Props) {
                 <p>{book.description}</p>
               </div>
 
-              <div className="mt-auto">
-                {isAvailable ? (
-                  <form action={requestLoan}>
-                    <input type="hidden" name="bookId" value={book.id} />
-                    <button type="submit" className="w-full md:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                      Solicitar Préstamo
-                    </button>
-                  </form>
-                ) : (
-                  <button className="w-full md:w-auto bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-xl">
-                    Anotarme en lista de espera
-                  </button>
+              <div className="mt-auto space-y-4">
+                {(book.format === 'Digital' || book.format === 'Hybrid') && (
+                  <a 
+                    href={`http://localhost:1337/api/books/${book.strapiId}/download`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full md:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  >
+                    Descargar Libro Digital
+                  </a>
                 )}
-                <p className="text-sm text-gray-400 mt-4 text-center md:text-left">
-                  * Recuerda que tienes 3 días para recoger tu libro después de realizar la solicitud de préstamo online.
-                </p>
+
+                {(book.format === 'Physical' || book.format === 'Hybrid') && (
+                  isAvailable ? (
+                    <form action={requestLoan}>
+                      <input type="hidden" name="bookId" value={book.strapiId} />
+                      <button type="submit" className="w-full md:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        Solicitar Préstamo Físico
+                      </button>
+                    </form>
+                  ) : (
+                    <button className="w-full md:w-auto bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-dark)] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-xl">
+                      Anotarme en lista de espera (Físico)
+                    </button>
+                  )
+                )}
+                
+                {(book.format === 'Physical' || book.format === 'Hybrid') && (
+                  <p className="text-sm text-gray-400 mt-4 text-center md:text-left">
+                    * Recuerda que tienes 3 días para recoger tu libro físico después de la solicitud.
+                  </p>
+                )}
               </div>
 
             </div>

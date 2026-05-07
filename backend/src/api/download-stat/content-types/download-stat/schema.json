@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "download_stats",
+  "info": {
+    "singularName": "download-stat",
+    "pluralName": "download-stats",
+    "displayName": "Download Stat",
+    "description": "Statistics for digital book downloads"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ipAddress": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "userAgent": {
+      "type": "string"
+    },
+    "book": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::book.book",
+      "inversedBy": "downloadStats"
+    }
+  }
+}

@@ -86,7 +86,7 @@ export default async function Home() {
             <div key={book.id} className="group flex flex-col bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               
               {/* Cover Image Area */}
-              <div className="relative w-full aspect-[2/3] overflow-hidden bg-gray-100">
+              <Link href={`/book/${book.documentId}`} className="relative w-full aspect-[2/3] overflow-hidden bg-gray-100 block">
                 {book.coverUrl ? (
                   <Image 
                     src={book.coverUrl} 
@@ -105,14 +105,16 @@ export default async function Home() {
                 <div className="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-[var(--foreground)]">
                   {book.level}
                 </div>
-              </div>
+              </Link>
 
               {/* Book Info Area */}
               <div className="p-5 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-2 gap-2">
-                  <h3 className="font-bold text-lg leading-tight line-clamp-2 text-[var(--foreground)]">
-                    {book.title}
-                  </h3>
+                  <Link href={`/book/${book.documentId}`}>
+                    <h3 className="font-bold text-lg leading-tight line-clamp-2 text-[var(--foreground)] group-hover:text-[var(--color-primary)] transition-colors">
+                      {book.title}
+                    </h3>
+                  </Link>
                 </div>
                 <p className="text-sm text-gray-500 mb-4">{book.author}</p>
                 

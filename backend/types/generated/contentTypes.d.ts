@@ -447,6 +447,10 @@ export interface ApiBookBook extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    digitalFile: Schema.Attribute.Media<'files'>;
+    format: Schema.Attribute.Enumeration<['Physical', 'Digital', 'Hybrid']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Physical'>;
     isbn: Schema.Attribute.String;
     language: Schema.Attribute.Enumeration<
       ['Italian', 'Spanish', 'Bilingual']
@@ -469,6 +473,7 @@ export interface ApiBookBook extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Available'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    totalDownloads: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

@@ -52,6 +52,28 @@
       "relation": "oneToMany",
       "target": "api::loan.loan",
       "mappedBy": "book"
+    },
+    "format": {
+      "type": "enumeration",
+      "enum": ["Physical", "Digital", "Hybrid"],
+      "default": "Physical",
+      "required": true
+    },
+    "digitalFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
+    },
+    "totalDownloads": {
+      "type": "integer",
+      "default": 0
+    },
+    "downloadStats": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::download-stat.download-stat",
+      "mappedBy": "book"
     }
   }
 }
