@@ -8,8 +8,12 @@ export default ({ env }) => ({
         api_secret: env('CLOUDINARY_SECRET'),
       },
       actionOptions: {
-        upload: {},
-        uploadStream: {},
+        upload: {
+          folder: 'biblioteca_dante',
+        },
+        uploadStream: {
+          folder: 'biblioteca_dante',
+        },
         delete: {},
       },
     },

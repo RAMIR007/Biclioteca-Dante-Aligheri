@@ -60,15 +60,15 @@ export default async function Home() {
               Descubre nuestra colección de literatura italiana y bilingüe. 
               Reserva tus libros online y sumérgete en el idioma.
             </p>
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20">
+            <Link href="#catalog" className="inline-block bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20">
               Explorar Catálogo
-            </button>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Catalog Grid Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <section id="catalog" className="max-w-7xl mx-auto px-4 py-16 md:py-24">
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">Novedades y Clásicos</h2>

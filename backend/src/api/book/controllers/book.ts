@@ -7,7 +7,7 @@ export default factories.createCoreController('api::book.book', ({ strapi }) => 
     // Buscar el libro con su archivo digital
     const book = await strapi.entityService.findOne('api::book.book', id, {
       populate: ['digitalFile'],
-    });
+    }) as any;
 
     if (!book || !book.digitalFile) {
       return ctx.notFound('El libro o el archivo digital no existen.');
@@ -22,7 +22,7 @@ export default factories.createCoreController('api::book.book', ({ strapi }) => 
     try {
       if (ipAddress && ipAddress !== 'Unknown' && ipAddress !== '127.0.0.1' && ipAddress !== '::1') {
         const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
-        const geoData = await response.json();
+        const geoData = await response.json() as any;
         if (geoData.status === 'success') {
           country = geoData.country;
         }

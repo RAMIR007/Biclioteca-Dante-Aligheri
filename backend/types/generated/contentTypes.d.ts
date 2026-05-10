@@ -448,6 +448,10 @@ export interface ApiBookBook extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     digitalFile: Schema.Attribute.Media<'files'>;
+    downloadStats: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::download-stat.download-stat'
+    >;
     format: Schema.Attribute.Enumeration<['Physical', 'Digital', 'Hybrid']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Physical'>;
@@ -477,6 +481,39 @@ export interface ApiBookBook extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDownloadStatDownloadStat
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'download_stats';
+  info: {
+    description: 'Statistics for digital book downloads';
+    displayName: 'Download Stat';
+    pluralName: 'download-stats';
+    singularName: 'download-stat';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'>;
+    country: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ipAddress: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::download-stat.download-stat'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    userAgent: Schema.Attribute.String;
   };
 }
 
@@ -1008,6 +1045,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::book.book': ApiBookBook;
+      'api::download-stat.download-stat': ApiDownloadStatDownloadStat;
       'api::loan.loan': ApiLoanLoan;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
