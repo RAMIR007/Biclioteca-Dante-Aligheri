@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "manuals",
+  "info": {
+    "singularName": "manual",
+    "pluralName": "manuals",
+    "displayName": "Manual",
+    "description": "User manual for librarians in multiple languages"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "spanish": {
+      "type": "richtext"
+    },
+    "italian": {
+      "type": "richtext"
+    }
+  }
+}

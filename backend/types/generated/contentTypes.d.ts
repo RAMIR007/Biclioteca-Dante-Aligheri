@@ -554,6 +554,36 @@ export interface ApiLoanLoan extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiManualManual extends Struct.SingleTypeSchema {
+  collectionName: 'manuals';
+  info: {
+    description: 'User manual for librarians in multiple languages';
+    displayName: 'Manual';
+    pluralName: 'manuals';
+    singularName: 'manual';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    italian: Schema.Attribute.RichText;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::manual.manual'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    spanish: Schema.Attribute.RichText;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1047,6 +1077,7 @@ declare module '@strapi/strapi' {
       'api::book.book': ApiBookBook;
       'api::download-stat.download-stat': ApiDownloadStatDownloadStat;
       'api::loan.loan': ApiLoanLoan;
+      'api::manual.manual': ApiManualManual;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
