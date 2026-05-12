@@ -11,7 +11,7 @@ export default {
       'es',
       // 'he',
       // 'id',
-      // 'it',
+      'it',
       // 'ja',
       // 'ko',
       // 'ms',
