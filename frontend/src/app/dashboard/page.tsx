@@ -3,7 +3,12 @@ import RenewButton from "./RenewButton";
 
 export default async function Dashboard() {
   // Fetch real data from Strapi
-  const response = await getUserLoans();
+  let response = null;
+  try {
+    response = await getUserLoans();
+  } catch (error) {
+    console.error("Failed to fetch loans during build:", error);
+  }
   const loans = response?.data || [];
 
   const activeLoans = loans
